@@ -1,0 +1,8 @@
+*.pyc
+constructs
+cache
+.doit.db*
+.rss_dates.db
+state_data.json
+output
+index
