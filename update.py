@@ -55,7 +55,6 @@ def generateConstructGraph(
     name,
     python_version,
     cpython_value,
-    nuitka_historic_value,
     nuitka_master_value,
     nuitka_develop_value,
     nuitka_factory_value,
@@ -65,7 +64,6 @@ def generateConstructGraph(
 
     graph_values = [
         cpython_value,
-        nuitka_historic_value,
         nuitka_master_value,
         nuitka_develop_value,
         nuitka_factory_value,
@@ -73,15 +71,11 @@ def generateConstructGraph(
 
     graph_xlabels = [
         "CPython %s" % python_version,
-        "Nuitka (historic)",
         "Nuitka (master)",
         "Nuitka (develop)",
         "Nuitka (factory)",
     ]
 
-    if nuitka_historic_value is None:
-        del graph_xlabels[1]
-        del graph_values[1]
 
     # Also return the rest for pygal plug-in:
     return """
@@ -176,8 +170,6 @@ def updateConstructGraphs():
     for python_version in python_versions:
         print("Python version:", python_version)
 
-        historic_data_dir = os.path.join(data_dir, python_version, "historic")
-
         master_data_dir = os.path.join(data_dir, python_version, "master")
 
         develop_data_dir = os.path.join(data_dir, python_version, "develop")
@@ -201,14 +193,8 @@ def updateConstructGraphs():
 
             master_values = readDataFile(os.path.join(master_data_dir, entry))
 
-            try:
-                historic_values = readDataFile(os.path.join(historic_data_dir, entry))
-            except IOError:
-                historic_values = {"NUITKA_CONSTRUCT": None}
-
             graph_data[python_version, construct_name] = dict(
                 cpython=cpython_values["CPYTHON_CONSTRUCT"],
-                historic=historic_values["NUITKA_CONSTRUCT"],
                 master=master_values["NUITKA_CONSTRUCT"],
                 develop=develop_values["NUITKA_CONSTRUCT"],
                 factory=factory_values["NUITKA_CONSTRUCT"],
@@ -218,7 +204,6 @@ def updateConstructGraphs():
                 name=construct_name,
                 python_version=python_version,
                 cpython_value=cpython_values["CPYTHON_CONSTRUCT"],
-                nuitka_historic_value=historic_values["NUITKA_CONSTRUCT"],
                 nuitka_master_value=master_values["NUITKA_CONSTRUCT"],
                 nuitka_develop_value=develop_values["NUITKA_CONSTRUCT"],
                 nuitka_factory_value=factory_values["NUITKA_CONSTRUCT"],
@@ -259,10 +244,6 @@ def updateConstructGraphs():
                 continue
 
             case_data = graph_data[key]
-
-            if graph_data.get("historic", None) is not None:
-                if isLessTicksThan(case_data["factory"], case_data["historic"]):
-                    emit("worse_than_historic")
 
             if isLessTicksThan(case_data["master"], case_data["develop"]):
                 emit("develop_down")
@@ -563,13 +544,6 @@ def _updateNumbers(python):
     nuitka_factory_commit = getCommitIdFromName("factory")
     nuitka_develop_commit = getCommitIdFromName("develop")
     nuitka_master_commit = getCommitIdFromName("master")
-
-    if not major.startswith("3") and False:
-        nuitka_historic_commit = commands.getoutput(
-            "cd nuitka/0.5.1.6; git rev-parse HEAD"
-        )
-    else:
-        nuitka_historic_commit = None
 
     cases_dir = getTestCasesDir()
 
