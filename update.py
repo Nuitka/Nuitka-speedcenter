@@ -548,12 +548,12 @@ def _updateNumbers(python):
     cases_dir = getTestCasesDir()
 
     for filename in sorted(os.listdir(cases_dir)):
-        if filename == "InplaceOperationInstanceStringAdd.py":
+        if filename in ["InplaceOperationInstanceStringAdd.py", "RepeatedFunctionCall.py.j2"]:
             continue
 
         fullpath = os.path.join(cases_dir, filename)
 
-        if not filename.endswith(".py"):
+        if not (filename.endswith(".py") or filename.endswith(".py.j2")):
             continue
         if filename.startswith("run_"):
             continue
