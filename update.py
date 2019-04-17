@@ -553,7 +553,7 @@ def _updateNumbers(python):
 
         fullpath = os.path.join(cases_dir, filename)
 
-        if not (filename.endswith(".py") or filename.endswith(".py.j2")):
+        if not (filename.endswith(".py", ".py.j2")):
             continue
         if filename.startswith("run_"):
             continue
