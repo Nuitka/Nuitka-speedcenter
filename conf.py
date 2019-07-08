@@ -656,11 +656,6 @@ def htmlcompressor(infile):
 
 
 FILTERS = {
-    ".png" : [ filters.optipng ],
-    ".PNG" : [ filters.optipng ],
-    ".jpg" : [ filters.jpegoptim ],
-    ".JPG" : [ filters.jpegoptim ],
-    ".jpeg" : [ filters.jpegoptim ],
     ".html" : [ hackContentClasses ],
 }
 
