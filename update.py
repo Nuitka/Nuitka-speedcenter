@@ -2,10 +2,16 @@
 
 from __future__ import print_function
 
-import subprocess, sys, os, difflib, hashlib, shutil
-import appdirs
-
+import difflib
+import hashlib
+import os
+import shutil
+import subprocess
+import sys
 from io import StringIO
+from optparse import OptionParser
+
+import appdirs
 
 worktrees_to_look_at = "master", "develop", "factory"
 
@@ -75,7 +81,6 @@ def generateConstructGraph(
         "Nuitka (develop)",
         "Nuitka (factory)",
     ]
-
 
     # Also return the rest for pygal plug-in:
     return """
@@ -149,7 +154,11 @@ def readDataFile(filename):
     values = {}
 
     if os.path.exists(filename):
-        exec(open(filename, "r").read(), values)
+        try:
+            exec(open(filename, "r").read(), values)
+        except ValueError:
+            return None
+
         del values["__builtins__"]
         return values
     else:
@@ -664,8 +673,6 @@ def updateNumbers():
     _updateNumbers("python2.7")
     _updateNumbers("python3.5")
 
-
-from optparse import OptionParser
 
 parser = OptionParser()
 
