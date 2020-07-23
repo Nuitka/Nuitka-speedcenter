@@ -19,7 +19,7 @@ import datetime
 # Data about this site
 BLOG_AUTHOR = "Kay Hayen"
 BLOG_TITLE = "Nuitka Speedcenter"
-SITE_URL = "http://speedcenter.nuitka.net/"
+SITE_URL = "https://speedcenter.nuitka.net/"
 BLOG_EMAIL = "Kay.Hayen@gmail.com"
 BLOG_DESCRIPTION = "Performance data for Nuitka."
 
@@ -1145,9 +1145,9 @@ WRITE_TAG_CLOUD = True
 
 NAVIGATION_LINKS = {
     DEFAULT_LANG: (
-        ('http://nuitka.net/', 'Nuitka'),
-        ('http://nuitka.net/pages/donations.html', 'Donations'),
-        ('http://nuitka.net/pages/impressum.html', 'About / Contact'),
+        ('https://nuitka.net/', 'Nuitka'),
+        ('https://nuitka.net/pages/donations.html', 'Donations'),
+        ('https://nuitka.net/pages/impressum.html', 'About / Contact'),
         ('/categories/index.html', 'Tags'),
     ),
 }

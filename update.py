@@ -39,7 +39,7 @@ def updateNuitkaSoftware():
     if not os.path.exists(clone_dir):
         makedirs(git_dir)
         executeCommand(
-            "cd '%s'; git clone --bare --mirror http://github.com/Nuitka/Nuitka.git"
+            "cd '%s'; git clone --bare --mirror https://github.com/Nuitka/Nuitka.git"
             % git_dir
         )
     else:
@@ -119,7 +119,7 @@ def fetchDocs():
         "doc/images/Nuitka-Logo-Symbol.png",
     ):
         command = (
-            "curl -s http://nuitka.net/gitweb/?p=Nuitka.git;a=blob_plain;f=%s;hb=refs/heads/factory"
+            "curl -s https://nuitka.net/gitweb/?p=Nuitka.git;a=blob_plain;f=%s;hb=refs/heads/factory"
             % filename
         )
         output = subprocess.check_output(command.split())

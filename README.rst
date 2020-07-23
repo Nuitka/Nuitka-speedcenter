@@ -2,7 +2,7 @@ Nuitka Speedcenter
 ------------------
 
 Welcome to Nuitka speedcenter, the underlying tool behind the site dedicated
-to performance and Nuitka: http://speedcenter.nuitka.net
+to performance and Nuitka: https://speedcenter.nuitka.net
 
 Currently this is very newly released and relatively ugly, hope is for you
 people to join and improve this in entirely new ways.
