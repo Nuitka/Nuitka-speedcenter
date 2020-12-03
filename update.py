@@ -154,8 +154,14 @@ def readDataFile(filename):
     values = {}
 
     if os.path.exists(filename):
+        # There was a bug, where Scons output was done even if used --quiet.
+        code = "".join(
+            line for line in open(filename, "r")
+            if "Nuitka-Scons:" not in line
+        )
+
         try:
-            exec(open(filename, "r").read(), values)
+            exec(code, values)
         except ValueError:
             return None
 
@@ -528,13 +534,13 @@ def _readNumbers(name, major, filename):
         getDataDir(), major, name, filename.replace(".py", ".data")
     )
 
-    readDataFile(data_filename)
+    return readDataFile(data_filename)
 
 
 def _validate(values, test_case_hash, commit):
     if values is None:
         return None
-    if values["TEST_CASE_HASH"] != test_case_hash or values["NUITKA_COMMIT"] != commit:
+    if values["TEST_CASE_HASH"] != test_case_hash or values["NUITKA_COMMIT"] != commit.hexsha:
         return None
 
     return values

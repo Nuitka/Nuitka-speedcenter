@@ -28,7 +28,9 @@ Nikola site is this:
 
    python3.7 -m pipenv run ./update.py --update-all
 
-Note it will attempt to deploy and fail. The UI is currently not really good.
+Note it will attempt to deploy and fail for you. The UI is currently not really good,
+the tool is mostly meant to run on CI servers, feel free to improve it for interactive
+use.
 
 To look at it, consider using this:
 
