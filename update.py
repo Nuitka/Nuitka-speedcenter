@@ -540,7 +540,7 @@ def _readNumbers(name, major, filename):
 def _validate(values, test_case_hash, commit):
     if values is None:
         return None
-    if values["TEST_CASE_HASH"] != test_case_hash or values["NUITKA_COMMIT"] != commit.hexsha:
+    if values.get("TEST_CASE_HASH") != test_case_hash or values.get("NUITKA_COMMIT") != commit.hexsha:
         return None
 
     return values
