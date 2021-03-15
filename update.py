@@ -261,18 +261,18 @@ def updateConstructGraphs():
             case_data = graph_data[key]
 
             if isLessTicksThan(case_data["master"], case_data["develop"]):
-                emit("develop_down")
+                emit("develop_down_vs_master")
             elif isLessTicksThan(case_data["develop"], case_data["master"]):
-                emit("develop_up")
+                emit("develop_up_vs_master")
             else:
-                emit("develop_steady")
+                emit("develop_steady_vs_master")
 
             if isLessTicksThan(case_data["develop"], case_data["factory"]):
-                emit("factory_down")
+                emit("factory_down_vs_develop")
             elif isLessTicksThan(case_data["factory"], case_data["develop"]):
-                emit("factory_up")
+                emit("factory_up_vs_develop")
             else:
-                emit("factory_steady")
+                emit("factory_steady_vs_develop")
 
         with open(construct_rst, "w") as construct_file:
             construct_file.write(
