@@ -677,7 +677,7 @@ def _updateNumbers(python):
 def updateNumbers():
     print("Updating numbers:")
     _updateNumbers("python2.7")
-    _updateNumbers("python3.5")
+    _updateNumbers("python3.7")
 
 
 parser = OptionParser()
