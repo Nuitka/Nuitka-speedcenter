@@ -676,8 +676,10 @@ def _updateNumbers(python):
 
 def updateNumbers():
     print("Updating numbers:")
+
+    # TODO: Cannot use the version in which pipenv we are working and not use the site module.
+    _updateNumbers("python3.8")
     _updateNumbers("python2.7")
-    _updateNumbers("python3.7")
 
 
 parser = OptionParser()
