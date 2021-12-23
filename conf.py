@@ -1136,7 +1136,8 @@ EXTRA_HEAD_DATA = """
 
 DISABLED_PLUGINS = [ "render_indexes", "classify_page_index", "classify_sections" ]
 
-DISABLE_INDEXES_PLUGIN_INDEX_AND_ATOM_FEED = True
+DISABLE_INDEXES=True
+DISABLE_MAIN_ATOM_FEED=True
 # URL_TYPE = "benign"
 
 TIMEZONE = "Europe/Berlin"
@@ -1147,7 +1148,7 @@ NAVIGATION_LINKS = {
     DEFAULT_LANG: (
         ('https://nuitka.net/', 'Nuitka'),
         ('https://nuitka.net/pages/donations.html', 'Donations'),
-        ('https://nuitka.net/pages/impressum.html', 'About / Contact'),
+        ('https://nuitka.net/doc/Impressum.html', 'About / Contact'),
         ('/categories/index.html', 'Tags'),
     ),
 }
@@ -1164,7 +1165,7 @@ NAVIGATION_LINKS = {
 # Use with care.
 # DISABLE_INDEXES = False
 # DISABLE_MAIN_ATOM_FEED = False
-# DISABLE_MAIN_RSS_FEED = False
+DISABLE_MAIN_RSS_FEED = True
 
 # Add the absolute paths to directories containing plugins to use them.
 # For example, the `plugins` directory of your clone of the Nikola plugins

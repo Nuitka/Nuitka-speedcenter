@@ -682,112 +682,108 @@ def updateNumbers():
     _updateNumbers("python2.7")
 
 
-parser = OptionParser()
+def main():
+    parser = OptionParser()
 
-parser.add_option(
-    "--update-nuitka",
-    action="store_true",
-    dest="nuitka",
-    default=False,
-    help="""\
+    parser.add_option(
+        "--update-nuitka",
+        action="store_true",
+        dest="nuitka",
+        default=False,
+        help="""\
 When given, the download page is updated. Default %default.""",
-)
+    )
 
-parser.add_option(
-    "--update-numbers",
-    action="store_true",
-    dest="numbers",
-    default=False,
-    help="""\
+    parser.add_option(
+        "--update-numbers",
+        action="store_true",
+        dest="numbers",
+        default=False,
+        help="""\
 When given, the numbers are updated. Default %default.""",
-)
+    )
 
-parser.add_option(
-    "--update-graphs",
-    action="store_true",
-    dest="graph",
-    default=False,
-    help="""\
+    parser.add_option(
+        "--update-graphs",
+        action="store_true",
+        dest="graph",
+        default=False,
+        help="""\
 When given, the site is built. Default %default.""",
-)
+    )
 
-parser.add_option(
-    "--build-site",
-    action="store_true",
-    dest="build",
-    default=False,
-    help="""\
+    parser.add_option(
+        "--build-site",
+        action="store_true",
+        dest="build",
+        default=False,
+        help="""\
 When given, the site is built. Default %default.""",
-)
+    )
 
-parser.add_option(
-    "--deploy-site",
-    action="store_true",
-    dest="deploy",
-    default=False,
-    help="""\
+    parser.add_option(
+        "--deploy-site",
+        action="store_true",
+        dest="deploy",
+        default=False,
+        help="""\
 When given, the site is deployed. Default %default.""",
-)
+    )
 
-parser.add_option(
-    "--no-push",
-    action="store_true",
-    dest="no_push",
-    default=False,
-    help="""\
-When given, push changes to repo. Default %default.""",
-)
-
-parser.add_option(
-    "--update-all",
-    action="store_true",
-    dest="all",
-    default=False,
-    help="""\
+    parser.add_option(
+        "--update-all",
+        action="store_true",
+        dest="all",
+        default=False,
+        help="""\
 When given, all is updated. Default %default.""",
-)
+    )
 
-options, positional_args = parser.parse_args()
+    options, positional_args = parser.parse_args()
 
-assert not positional_args, positional_args
+    assert not positional_args, positional_args
 
-if options.all:
-    options.nuitka = True
-    options.numbers = True
-    options.graph = True
-    options.build = True
+    if options.all:
+        options.nuitka = True
+        options.numbers = True
+        options.graph = True
+        options.build = True
 
-    if not options.no_push:
-        options.deploy = True
+    # TODO: Make this an option too.
+    if not os.path.isdir("doc/images"):
+        fetchDocs()
 
-# TODO: Make this an option too.
-if not os.path.isdir("doc/images"):
-    fetchDocs()
+    if options.nuitka:
+        updateNuitkaSoftware()
 
-if options.nuitka:
-    updateNuitkaSoftware()
+    if options.numbers:
+        updateNumbers()
 
-if options.numbers:
-    updateNumbers()
+    if options.graph:
+        updateConstructGraphs()
 
-if options.graph:
-    updateConstructGraphs()
-
-if options.build or options.deploy:
-    if os.path.isdir("cache"):
-        shutil.rmtree("cache")
+    if options.build or options.deploy:
+        if os.path.isdir("cache"):
+            shutil.rmtree("cache")
 
 
-def runNikolaCommand(command):
-    print("Starting nikola command:", command)
-    assert 0 == os.system("nikola " + command)
-    print("Succeeded nikola command:", command)
+    def runNikolaCommand(command):
+        print("Starting nikola command:", command)
+        assert 0 == os.system("nikola " + command)
+        print("Succeeded nikola command:", command)
 
 
-if options.build:
-    runNikolaCommand("build")
+    if options.build:
+        runNikolaCommand("build")
 
-    os.unlink("output/rss.xml")
+    if options.deploy:
+        runNikolaCommand("deploy")
 
-if options.deploy:
-    runNikolaCommand("deploy")
+
+if __name__ == "__main__":
+    print("Running with %s" % sys.executable)
+    os.environ["PATH"] = (
+        os.path.dirname(sys.executable) + os.pathsep + os.environ["PATH"]
+    )
+
+    main()
