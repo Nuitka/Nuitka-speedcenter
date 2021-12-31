@@ -1126,10 +1126,6 @@ SEARCH_FORM = ""
 BODY_END = ""
 
 EXTRA_HEAD_DATA = """
-<link rel="apple-touch-icon" href="/apple-touch-icon-iphone.png" />
-<link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-ipad.png" />
-<link rel="apple-touch-icon" sizes="114x114" href="/apple-touch-icon-iphone4.png" />
-<link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon-ipad3.png" />
 """
 
 # SLUG_TAG_PATH = False
