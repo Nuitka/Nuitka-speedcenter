@@ -748,6 +748,7 @@ When given, all is updated. Default %default.""",
         options.numbers = True
         options.graph = True
         options.build = True
+        options.deploy = True
 
     # TODO: Make this an option too.
     if not os.path.isdir("doc/images"):
