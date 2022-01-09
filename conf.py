@@ -1144,7 +1144,7 @@ NAVIGATION_LINKS = {
     DEFAULT_LANG: (
         ('https://nuitka.net/', 'Nuitka'),
         ('https://nuitka.net/pages/donations.html', 'Donations'),
-        ('https://nuitka.net/doc/Impressum.html', 'About / Contact'),
+        ('https://nuitka.net/pages/impressum.html', 'About / Contact'),
         ('/categories/index.html', 'Tags'),
     ),
 }
