@@ -13,7 +13,7 @@ from optparse import OptionParser
 
 import appdirs
 
-worktrees_to_look_at = "master", "develop", "factory"
+worktrees_to_look_at = "main", "develop", "factory"
 
 cache_dir = appdirs.user_cache_dir("Nuitka-Speedcenter", None)
 git_dir = os.path.join(cache_dir, "git")
@@ -61,7 +61,7 @@ def generateConstructGraph(
     name,
     python_version,
     cpython_value,
-    nuitka_master_value,
+    nuitka_main_value,
     nuitka_develop_value,
     nuitka_factory_value,
 ):
@@ -70,14 +70,14 @@ def generateConstructGraph(
 
     graph_values = [
         cpython_value,
-        nuitka_master_value,
+        nuitka_main_value,
         nuitka_develop_value,
         nuitka_factory_value,
     ]
 
     graph_xlabels = [
         "CPython %s" % python_version,
-        "Nuitka (master)",
+        "Nuitka (main)",
         "Nuitka (develop)",
         "Nuitka (factory)",
     ]
@@ -185,7 +185,7 @@ def updateConstructGraphs():
     for python_version in python_versions:
         print("Python version:", python_version)
 
-        master_data_dir = os.path.join(data_dir, python_version, "master")
+        main_data_dir = os.path.join(data_dir, python_version, "main")
 
         develop_data_dir = os.path.join(data_dir, python_version, "develop")
 
@@ -193,7 +193,7 @@ def updateConstructGraphs():
 
         cpython_data_dir = os.path.join(data_dir, python_version, "cpython")
 
-        for entry in sorted(os.listdir(master_data_dir)):
+        for entry in sorted(os.listdir(main_data_dir)):
             if not entry.endswith(".data"):
                 continue
 
@@ -206,11 +206,11 @@ def updateConstructGraphs():
 
             develop_values = readDataFile(os.path.join(develop_data_dir, entry))
 
-            master_values = readDataFile(os.path.join(master_data_dir, entry))
+            main_values = readDataFile(os.path.join(main_data_dir, entry))
 
             graph_data[python_version, construct_name] = dict(
                 cpython=cpython_values["CPYTHON_CONSTRUCT"],
-                master=master_values["NUITKA_CONSTRUCT"],
+                main=main_values["NUITKA_CONSTRUCT"],
                 develop=develop_values["NUITKA_CONSTRUCT"],
                 factory=factory_values["NUITKA_CONSTRUCT"],
             )
@@ -219,7 +219,7 @@ def updateConstructGraphs():
                 name=construct_name,
                 python_version=python_version,
                 cpython_value=cpython_values["CPYTHON_CONSTRUCT"],
-                nuitka_master_value=master_values["NUITKA_CONSTRUCT"],
+                nuitka_main_value=main_values["NUITKA_CONSTRUCT"],
                 nuitka_develop_value=develop_values["NUITKA_CONSTRUCT"],
                 nuitka_factory_value=factory_values["NUITKA_CONSTRUCT"],
             )
@@ -260,12 +260,12 @@ def updateConstructGraphs():
 
             case_data = graph_data[key]
 
-            if isLessTicksThan(case_data["master"], case_data["develop"]):
-                emit("develop_down_vs_master")
-            elif isLessTicksThan(case_data["develop"], case_data["master"]):
-                emit("develop_up_vs_master")
+            if isLessTicksThan(case_data["main"], case_data["develop"]):
+                emit("develop_down_vs_main")
+            elif isLessTicksThan(case_data["develop"], case_data["main"]):
+                emit("develop_up_vs_main")
             else:
-                emit("develop_steady_vs_master")
+                emit("develop_steady_vs_main")
 
             if isLessTicksThan(case_data["develop"], case_data["factory"]):
                 emit("factory_down_vs_develop")
@@ -558,7 +558,7 @@ def _updateNumbers(python):
 
     nuitka_factory_commit = getCommitIdFromName("factory")
     nuitka_develop_commit = getCommitIdFromName("develop")
-    nuitka_master_commit = getCommitIdFromName("master")
+    nuitka_main_commit = getCommitIdFromName("main")
 
     cases_dir = getTestCasesDir()
 
@@ -610,8 +610,8 @@ def _updateNumbers(python):
             develop_values, test_case_hash, nuitka_develop_commit
         )
 
-        master_values = _readNumbers("master", major, filename)
-        master_values = _validate(master_values, test_case_hash, nuitka_master_commit)
+        main_values = _readNumbers("main", major, filename)
+        main_values = _validate(main_values, test_case_hash, nuitka_main_commit)
 
         if needs_cpython:
             print("CPython ... ")
@@ -646,9 +646,9 @@ def _updateNumbers(python):
             print("Nuitka develop ... ")
             _takeNumbers("develop", python, major, filename)
 
-        if master_values is None:
-            print("Nuitka master ... ")
-            _takeNumbers("master", python, major, filename)
+        if main_values is None:
+            print("Nuitka main ... ")
+            _takeNumbers("main", python, major, filename)
 
     version_data_dir = os.path.join(getDataDir(), major)
 
