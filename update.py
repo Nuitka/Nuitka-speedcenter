@@ -139,15 +139,11 @@ def getSourcesDir():
 def getPythonVersions():
     data_dir = getDataDir()
 
-    python_versions = []
-
-    for python_version in sorted(os.listdir(data_dir)):
-        if python_version == "construct-sources":
-            continue
-
-        python_versions.append(python_version)
-
-    return python_versions
+    return [
+        python_version
+        for python_version in sorted(os.listdir(data_dir))
+        if python_version != "construct-sources"
+    ]
 
 
 def readDataFile(filename):
