@@ -147,24 +147,23 @@ def getPythonVersions():
 
 
 def readDataFile(filename):
+    if not os.path.exists(filename):
+        return None
+    # There was a bug, where Scons output was done even if used --quiet.
+    code = "".join(
+        line for line in open(filename, "r")
+        if "Nuitka-Scons:" not in line
+    )
+
     values = {}
 
-    if os.path.exists(filename):
-        # There was a bug, where Scons output was done even if used --quiet.
-        code = "".join(
-            line for line in open(filename, "r")
-            if "Nuitka-Scons:" not in line
-        )
-
-        try:
-            exec(code, values)
-        except ValueError:
-            return None
-
-        del values["__builtins__"]
-        return values
-    else:
+    try:
+        exec(code, values)
+    except ValueError:
         return None
+
+    del values["__builtins__"]
+    return values
 
 
 def updateConstructGraphs():
@@ -659,7 +658,7 @@ def _updateNumbers(python):
             fullpath = os.path.join(branch_path, filename)
 
             if filename.endswith((".data", ".html")):
-                case_name = filename[:-5] + ".py"
+                case_name = f'{filename[:-5]}.py'
 
                 case_filename = os.path.join(cases_dir, case_name)
                 if not os.path.exists(case_filename):
@@ -766,7 +765,7 @@ When given, all is updated. Default %default.""",
 
     def runNikolaCommand(command):
         print("Starting nikola command:", command)
-        assert 0 == os.system("nikola " + command)
+        assert 0 == os.system(f'nikola {command}')
         print("Succeeded nikola command:", command)
 
 

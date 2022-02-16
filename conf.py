@@ -637,17 +637,6 @@ def hackContentClasses(infile):
 
     return
 
-    contents = open(infile).read()
-
-    new_contents = contents.split(
-        """<img alt="images/Nuitka-Logo-Symbol.png" src="images/Nuitka-Logo-Symbol.png">""",
-        1
-    )
-    new_contents = "".join( new_contents )
-
-    if contents != new_contents:
-        open(infile,"w").write(new_contents)
-
 
 def htmlcompressor(infile):
     import os
