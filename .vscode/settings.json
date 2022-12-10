@@ -4,5 +4,6 @@
         "nikola",
         "Scons",
         "Speedcenter"
-    ]
+    ],
+    "esbonio.sphinx.confDir": ""
 }
