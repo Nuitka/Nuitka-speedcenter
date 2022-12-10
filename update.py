@@ -13,7 +13,7 @@ from optparse import OptionParser
 
 import appdirs
 
-worktrees_to_look_at = "main", "develop", "factory"
+work_trees_to_look_at = "main", "develop", "factory"
 
 cache_dir = appdirs.user_cache_dir("Nuitka-Speedcenter", None)
 git_dir = os.path.join(cache_dir, "git")
@@ -26,8 +26,8 @@ def executeCommand(command):
     assert 0 == os.system(command)
 
 
-def getNuitkaWorktreeDir(worktree):
-    return os.path.join(git_dir, worktree)
+def getNuitkaWorkTreeDir(work_tree):
+    return os.path.join(git_dir, work_tree)
 
 
 def makedirs(path, mode=0o755):
@@ -38,6 +38,7 @@ def makedirs(path, mode=0o755):
 def updateNuitkaSoftware():
     if not os.path.exists(clone_dir):
         makedirs(git_dir)
+
         executeCommand(
             "cd '%s'; git clone --bare --mirror https://github.com/Nuitka/Nuitka.git"
             % git_dir
@@ -45,16 +46,16 @@ def updateNuitkaSoftware():
     else:
         executeCommand("cd '%s'; git fetch -p" % clone_dir)
 
-    for worktree in worktrees_to_look_at:
-        worktree_dir = getNuitkaWorktreeDir(worktree)
+    for work_tree in work_trees_to_look_at:
+        work_tree_dir = getNuitkaWorkTreeDir(work_tree)
 
-        if not os.path.exists(worktree_dir):
+        if not os.path.exists(work_tree_dir):
             executeCommand(
                 "cd '%s'; git worktree add '%s' '%s'"
-                % (clone_dir, worktree_dir, worktree)
+                % (clone_dir, work_tree_dir, work_tree)
             )
         else:
-            executeCommand("cd '%s'; git reset --hard '%s'" % (worktree_dir, worktree))
+            executeCommand("cd '%s'; git reset --hard '%s'" % (work_tree_dir, work_tree))
 
 
 def generateConstructGraph(
@@ -75,7 +76,7 @@ def generateConstructGraph(
         nuitka_factory_value,
     ]
 
-    graph_xlabels = [
+    graph_x_labels = [
         "CPython %s" % python_version,
         "Nuitka (main)",
         "Nuitka (develop)",
@@ -86,12 +87,12 @@ def generateConstructGraph(
     return """
 .. chart:: Bar
     :title: '%(graph_title)s'
-    :x_labels: %(graph_xlabels)s
+    :x_labels: %(graph_x_labels)s
 
     'Ticks', %(graph_values)s
     """ % {
         "graph_title": graph_title,
-        "graph_xlabels": repr(graph_xlabels),
+        "graph_x_labels": repr(graph_x_labels),
         "graph_values": repr(graph_values),
     }
 
@@ -458,7 +459,7 @@ The following Python construct test cases exist so far:
 
         index_file.write(
             """
-Also coming are optimization tests, demonstrating the removal or simplication
+Also coming are optimization tests, demonstrating the removal or simplification
 of executed code."""
         )
 
@@ -503,10 +504,10 @@ def _takeNumbers(name, python, major, filename):
     command = [
         python,
         os.path.join(
-            getNuitkaWorktreeDir("factory"), "bin/measure-construct-performance"
+            getNuitkaWorkTreeDir("factory"), "bin/measure-construct-performance"
         ),
         "--nuitka",
-        os.path.join(getNuitkaWorktreeDir(name), "bin/nuitka"),
+        os.path.join(getNuitkaWorkTreeDir(name), "bin/nuitka"),
         "--cpython",
         "no",
         "--code-diff",
@@ -543,7 +544,7 @@ def _validate(values, test_case_hash, commit):
 
 
 def getTestCasesDir():
-    return os.path.join(getNuitkaWorktreeDir("factory"), "tests/benchmarks/constructs")
+    return os.path.join(getNuitkaWorkTreeDir("factory"), "tests/benchmarks/constructs")
 
 
 def _updateNumbers(python):
@@ -616,7 +617,7 @@ def _updateNumbers(python):
             command = [
                 python,
                 os.path.join(
-                    getNuitkaWorktreeDir("factory"), "bin/measure-construct-performance"
+                    getNuitkaWorkTreeDir("factory"), "bin/measure-construct-performance"
                 ),
                 fullpath,
                 "--copy-source-to",
