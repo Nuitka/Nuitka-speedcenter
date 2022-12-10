@@ -688,7 +688,7 @@ def main():
         dest="nuitka",
         default=False,
         help="""\
-When given, the download page is updated. Default %default.""",
+When given, the Nuitka repo is updated. Default %default.""",
     )
 
     parser.add_option(
