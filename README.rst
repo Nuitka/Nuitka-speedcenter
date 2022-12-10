@@ -10,7 +10,7 @@ people to join and improve this in entirely new ways.
 Installation
 ------------
 
-This needs Python 3.7 and Linux currently. Also valgrind will have to be
+This needs Python 3.9 and Linux currently. Also ``Valgrind`` will have to be
 installed.
 
 Then do these commands (may take a while, it is compile parts of the
@@ -18,15 +18,15 @@ dependencies via C it seems, and not all of it is available as wheels):
 
 .. code-block::
 
-   python3.7 -m pip install pipenv
-   python3.7 -m pipenv install
+   python3.9 -m pip install pipenv
+   python3.9 -m pipenv install
 
 Now the tools are runnable, the main frontend currently for building the
 Nikola site is this:
 
 .. code-block::
 
-   python3.7 -m pipenv run python ./update.py --update-all
+   python3.9 -m pipenv run python ./update.py --update-all
 
 Note it will attempt to deploy and fail for you. The UI is currently not really good,
 the tool is mostly meant to run on CI servers, feel free to improve it for interactive
@@ -36,7 +36,7 @@ To look at it, consider using this:
 
 .. code-block::
 
-   python3.7 -m pipenv run nikola serve
+   python3.9 -m pipenv run nikola serve
 
 Improvements Needed
 -------------------
