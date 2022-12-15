@@ -55,7 +55,9 @@ def updateNuitkaSoftware():
                 % (clone_dir, work_tree_dir, work_tree)
             )
         else:
-            executeCommand("cd '%s'; git reset --hard '%s'" % (work_tree_dir, work_tree))
+            executeCommand(
+                "cd '%s'; git reset --hard '%s'" % (work_tree_dir, work_tree)
+            )
 
 
 def generateConstructGraph(
@@ -153,8 +155,7 @@ def readDataFile(filename):
     if os.path.exists(filename):
         # There was a bug, where Scons output was done even if used --quiet.
         code = "".join(
-            line for line in open(filename, "r")
-            if "Nuitka-Scons:" not in line
+            line for line in open(filename, "r") if "Nuitka-Scons:" not in line
         )
 
         try:
@@ -537,7 +538,10 @@ def _readNumbers(name, major, filename):
 def _validate(values, test_case_hash, commit):
     if values is None:
         return None
-    if values.get("TEST_CASE_HASH") != test_case_hash or values.get("NUITKA_COMMIT") != commit.hexsha:
+    if (
+        values.get("TEST_CASE_HASH") != test_case_hash
+        or values.get("NUITKA_COMMIT") != commit.hexsha
+    ):
         return None
 
     return values
@@ -764,12 +768,10 @@ When given, all is updated. Default %default.""",
         if os.path.isdir("cache"):
             shutil.rmtree("cache")
 
-
     def runNikolaCommand(command):
         print("Starting nikola command:", command)
         assert 0 == os.system("nikola " + command)
         print("Succeeded nikola command:", command)
-
 
     if options.build:
         runNikolaCommand("build")
