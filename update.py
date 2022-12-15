@@ -142,11 +142,14 @@ def getSourcesDir():
 def getPythonVersions():
     data_dir = getDataDir()
 
-    return [
-        python_version
-        for python_version in sorted(os.listdir(data_dir))
-        if python_version != "construct-sources"
-    ]
+    return sorted(
+        [
+            python_version
+            for python_version in sorted(os.listdir(data_dir))
+            if python_version != "construct-sources"
+        ],
+        key=lambda python_version: tuple(int(x) for x in python_version.split(".")),
+    )
 
 
 def readDataFile(filename):
