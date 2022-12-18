@@ -2,6 +2,7 @@
 
 from __future__ import print_function
 
+import datetime
 import difflib
 import hashlib
 import os
@@ -149,7 +150,7 @@ def getPythonVersions():
             if python_version != "construct-sources"
         ],
         key=lambda python_version: tuple(int(x) for x in python_version.split(".")),
-        reverse=True
+        reverse=True,
     )
 
 
@@ -281,11 +282,12 @@ def updateConstructGraphs():
                 """\
 .. title: Construct %s
 .. tags: %s
-.. date: 2013/08/15 08:15:17
+.. date: %s
 
 .. contents::
 """
-                % (construct_name, ",".join(tags or ["untagged"]))
+                % (construct_name, ",".join(tags or ["untagged"])),
+                datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
             )
 
             construct_file.write(
