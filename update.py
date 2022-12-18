@@ -149,6 +149,7 @@ def getPythonVersions():
             if python_version != "construct-sources"
         ],
         key=lambda python_version: tuple(int(x) for x in python_version.split(".")),
+        reverse=True
     )
 
 
