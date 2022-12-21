@@ -286,8 +286,11 @@ def updateConstructGraphs():
 
 .. contents::
 """
-                % (construct_name, ",".join(tags or ["untagged"])),
-                datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                % (
+                    construct_name,
+                    ",".join(tags or ["untagged"]),
+                    datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                )
             )
 
             construct_file.write(
