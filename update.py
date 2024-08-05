@@ -13,6 +13,9 @@ from io import StringIO
 from optparse import OptionParser
 
 import appdirs
+from collections import defaultdict
+
+from orderedsets import OrderedSet
 
 work_trees_to_look_at = "main", "develop", "factory"
 
@@ -68,11 +71,12 @@ def updateNuitkaSoftware():
 def generateConstructGraph(
     name,
     python_version,
-    cpython_value,
-    nuitka_main_value,
-    nuitka_develop_value,
-    nuitka_factory_value,
+    graph_data,
 ):
+    cpython_value = (graph_data["cpython"])
+    nuitka_main_value = (graph_data["main"])
+    nuitka_develop_value = (graph_data["develop"])
+    nuitka_factory_value = (graph_data["factory"])
 
     graph_title = "Construct %s" % name
 
@@ -178,16 +182,30 @@ def readDataFile(filename):
         return None
 
 
-def updateConstructGraphs():
-    home_dir = getHomeDir()
+def makeTag(python_version, case_data, version1, version2):
+    python_version_prefix = python_version.replace(".", "")
+    key = (python_version_prefix, version2, version1)
+
+    assert version1 in case_data, (version1, case_data)
+    assert version2 in case_data, (version2, case_data)
+    if isLessTicksThan(case_data[version2], case_data[version1]):
+        return "%s_%s_down_vs_%s" % key
+    elif isLessTicksThan(case_data[version1], case_data[version2]):
+        return "%s_%s_up_vs_%s" % key
+    else:
+        return "%s_%s_steady_vs_%s" % key
+
+
+def getConstructGraphData():
     data_dir = getDataDir()
 
-    graphs = {}
     graph_data = {}
 
     python_versions = getPythonVersions()
 
     construct_names = set()
+
+    tags = defaultdict(OrderedSet)
 
     for python_version in python_versions:
         print("Python version:", python_version)
@@ -222,64 +240,63 @@ def updateConstructGraphs():
                 factory=factory_values["NUITKA_CONSTRUCT"],
             )
 
-            graphs[python_version, construct_name] = generateConstructGraph(
-                name=construct_name,
-                python_version=python_version,
-                cpython_value=cpython_values["CPYTHON_CONSTRUCT"],
-                nuitka_main_value=main_values["NUITKA_CONSTRUCT"],
-                nuitka_develop_value=develop_values["NUITKA_CONSTRUCT"],
-                nuitka_factory_value=factory_values["NUITKA_CONSTRUCT"],
+            tags[construct_name].add(
+                makeTag(python_version=python_version, case_data=graph_data[python_version, construct_name], version1="main", version2="develop")
+            )
+            tags[construct_name].add(
+                makeTag(python_version=python_version, case_data=graph_data[python_version, construct_name], version1="develop", version2="factory"),
             )
 
+    return python_versions, construct_names, graph_data, tags
+
+
+def isLessTicksThan(value1, value2):
+    if abs(value1 - value2) / float(value1) < 0.001:
+        return False
+
+    if abs(value1 - value2) < 1000:
+        return False
+
+    return value1 < value2
+
+
+# Check noise detection correctness
+assert isLessTicksThan(102528524, 77178450) is False
+assert isLessTicksThan(77178450, 102528524) is True
+assert isLessTicksThan(99858, 99542) is False
+assert isLessTicksThan(99542, 99858) is False
+
+
+def updateConstructGraphs():
+    python_versions, construct_names, graph_data, tags = getConstructGraphData()
+
+    home_dir = getHomeDir()
+
+    graphs = {}
+
+    for python_version in python_versions:
+        for construct_name in construct_names:
+            if (python_version, construct_name) in graph_data:
+                graphs[python_version, construct_name] = generateConstructGraph(
+                    name=construct_name,
+                    python_version=python_version,
+                    graph_data=graph_data[python_version, construct_name],
+                )
+
     for construct_name in sorted(construct_names):
+        construct_tags = tags[construct_name]
+
         construct_rst = os.path.join(
             home_dir, "constructs", "construct-%s.rst" % construct_name
         )
 
         makedirs(os.path.dirname(construct_rst))
 
-        tags = []
-
-        def makeTag(tag):
-            return python_version.replace(".", "") + "_" + tag
-
-        emit = lambda tag: tags.append(makeTag(tag))
-
-        def isLessTicksThan(value1, value2):
-            if abs(value1 - value2) / float(value1) < 0.001:
-                return False
-
-            if abs(value1 - value2) < 1000:
-                return False
-
-            return value1 < value2
-
-        assert isLessTicksThan(102528524, 77178450) is False
-        assert isLessTicksThan(77178450, 102528524) is True
-        assert isLessTicksThan(99858, 99542) is False
-        assert isLessTicksThan(99542, 99858) is False
-
         for python_version in python_versions:
             key = python_version, construct_name
 
             if key not in graph_data:
                 continue
-
-            case_data = graph_data[key]
-
-            if isLessTicksThan(case_data["main"], case_data["develop"]):
-                emit("develop_down_vs_main")
-            elif isLessTicksThan(case_data["develop"], case_data["main"]):
-                emit("develop_up_vs_main")
-            else:
-                emit("develop_steady_vs_main")
-
-            if isLessTicksThan(case_data["develop"], case_data["factory"]):
-                emit("factory_down_vs_develop")
-            elif isLessTicksThan(case_data["factory"], case_data["develop"]):
-                emit("factory_up_vs_develop")
-            else:
-                emit("factory_steady_vs_develop")
 
         with open(construct_rst, "w") as construct_file:
             construct_file.write(
@@ -292,7 +309,7 @@ def updateConstructGraphs():
 """
                 % (
                     construct_name,
-                    ",".join(tags or ["untagged"]),
+                    ",".join(construct_tags or ["untagged"]),
                     datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                 )
             )
@@ -377,71 +394,6 @@ Source Code without Construct
                     )
                 )
             )
-
-            code_diff = difflib.HtmlDiff().make_table(
-                case_1.split("\n"), case_2.split("\n"), "Construct", "Baseline", True
-            )
-
-            construct_file.write(
-                """
-Context Diff of Source Code
-===========================
-
-.. raw:: html
-
-    <style type="text/css">
-        table.diff {font-family:Courier; border:medium;}
-        .diff_header {background-color:#e0e0e0}
-        td.diff_header {text-align:right}
-        .diff_next {background-color:#c0c0c0}
-        .diff_chg {background-color:#ffff77}
-        .diff_sub {background-color:#ffaaaa}
-        .diff_add {background-color:#aaffaa}
-    </style>
-
-%s
-"""
-                % (
-                    "\n".join(
-                        ("    " + line) if line else ""
-                        for line in code_diff.split("\n")
-                    )
-                )
-            )
-            diff_filename = os.path.join(
-                data_dir, python_version, "factory", construct_name + ".html"
-            )
-
-            if os.path.exists(diff_filename):
-
-                generated_diff = open(diff_filename).read()
-
-                construct_file.write(
-                    """
-Context Diff of Generated Code
-==============================
-
-.. raw:: html
-
-    <style type="text/css">
-        table.diff {font-family:Courier; border:medium;}
-        .diff_header {background-color:#e0e0e0}
-        td.diff_header {text-align:right}
-        .diff_next {background-color:#c0c0c0}
-        .diff_add {background-color:#aaffaa}
-        .diff_chg {background-color:#ffff77}
-        .diff_sub {background-color:#ffaaaa}
-    </style>
-
-%s
-"""
-                    % (
-                        "\n".join(
-                            ("    " + line) if line else ""
-                            for line in generated_diff.split("\n")
-                        )
-                    )
-                )
 
     index_dir = os.path.join(home_dir, "index")
     makedirs(index_dir)
@@ -577,6 +529,7 @@ def _updateNumbers(python):
     cases_dir = getTestCasesDir()
 
     for filename in sorted(os.listdir(cases_dir)):
+        # TODO: Is this still valid?
         if filename == "InplaceOperationInstanceStringAdd.py":
             continue
 
@@ -590,6 +543,9 @@ def _updateNumbers(python):
             continue
 
         if python_version.startswith("3") and filename.endswith("_27.py"):
+            continue
+
+        if python_version < "3.5" and filename.endswith("35.py"):
             continue
 
         print("Consider:", filename)
@@ -692,7 +648,7 @@ def updateNumbers():
     print("Updating numbers:")
 
     _updateNumbers("python3.10")
-    _updateNumbers("python3.8")
+    #    _updateNumbers("python3.8")
     _updateNumbers("python2.7")
 
 
