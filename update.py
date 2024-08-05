@@ -3,7 +3,6 @@
 from __future__ import print_function
 
 import datetime
-import difflib
 import hashlib
 import os
 import shutil
@@ -73,10 +72,10 @@ def generateConstructGraph(
     python_version,
     graph_data,
 ):
-    cpython_value = (graph_data["cpython"])
-    nuitka_main_value = (graph_data["main"])
-    nuitka_develop_value = (graph_data["develop"])
-    nuitka_factory_value = (graph_data["factory"])
+    cpython_value = graph_data["cpython"]
+    nuitka_main_value = graph_data["main"]
+    nuitka_develop_value = graph_data["develop"]
+    nuitka_factory_value = graph_data["factory"]
 
     graph_title = "Construct %s" % name
 
@@ -241,10 +240,20 @@ def getConstructGraphData():
             )
 
             tags[construct_name].add(
-                makeTag(python_version=python_version, case_data=graph_data[python_version, construct_name], version1="main", version2="develop")
+                makeTag(
+                    python_version=python_version,
+                    case_data=graph_data[python_version, construct_name],
+                    version1="main",
+                    version2="develop",
+                )
             )
             tags[construct_name].add(
-                makeTag(python_version=python_version, case_data=graph_data[python_version, construct_name], version1="develop", version2="factory"),
+                makeTag(
+                    python_version=python_version,
+                    case_data=graph_data[python_version, construct_name],
+                    version1="develop",
+                    version2="factory",
+                ),
             )
 
     return python_versions, construct_names, graph_data, tags
