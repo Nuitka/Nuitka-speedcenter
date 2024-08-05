@@ -17,7 +17,11 @@ import appdirs
 work_trees_to_look_at = "main", "develop", "factory"
 
 cache_dir = appdirs.user_cache_dir("Nuitka-Speedcenter", None)
+if not os.path.exists(cache_dir):
+    os.makedirs(cache_dir)
 git_dir = os.path.join(cache_dir, "git")
+if not os.path.exists(git_dir):
+    os.makedirs(git_dir)
 clone_dir = os.path.join(git_dir, "Nuitka.git")
 
 
