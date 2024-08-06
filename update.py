@@ -655,6 +655,8 @@ def updateNumbers():
     print("Updating numbers:")
 
     _updateNumbers("python3.10")
+    _updateNumbers("python3.11")
+    _updateNumbers("python3.12")
     #    _updateNumbers("python3.8")
     _updateNumbers("python2.7")
 
