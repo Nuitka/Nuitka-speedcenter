@@ -207,8 +207,6 @@ def getConstructGraphData():
     tags = defaultdict(OrderedSet)
 
     for python_version in python_versions:
-        print("Python version:", python_version)
-
         main_data_dir = os.path.join(data_dir, python_version, "main")
 
         develop_data_dir = os.path.join(data_dir, python_version, "develop")
@@ -661,6 +659,41 @@ def updateNumbers():
     _updateNumbers("python2.7")
 
 
+def reportNumbers():
+    print("Report of numbers:")
+
+    python_versions, construct_names, graph_data, tags = getConstructGraphData()
+
+    data = []
+
+    for construct_name, tag_set in tags.items():
+        for tag in tag_set:
+            if "steady" in tag:
+                continue
+
+            python_version = tag.split("_")[0]
+            python_version = python_version[0] + "." + python_version[1:]
+
+            if python_version == "2.7":
+                continue
+
+            if not tag.startswith("310_factory"):
+                continue
+
+            factory = graph_data[python_version, construct_name]["factory"]
+            develop = graph_data[python_version, construct_name]["develop"]
+
+            data.append((construct_name, tag, python_version, develop, factory, ((factory/develop) * 100)))
+
+    data.sort(key = lambda d:d[5])
+
+    for line in data:
+        construct_name, tag, python_version, develop, factory, percent = line
+
+        print(construct_name, tag, python_version, develop, "%.2f" % percent)
+
+
+
 def main():
     parser = OptionParser()
 
@@ -681,6 +714,16 @@ When given, the Nuitka repo is updated. Default %default.""",
         help="""\
 When given, the numbers are updated. Default %default.""",
     )
+
+    parser.add_option(
+        "--show-numbers",
+        action="store_true",
+        dest="show",
+        default=False,
+        help="""\
+When given, report the interesting numbers in text report. Default %default.""",
+    )
+
 
     parser.add_option(
         "--update-graphs",
@@ -725,6 +768,7 @@ When given, all is updated. Default %default.""",
     if options.all:
         options.nuitka = True
         options.numbers = True
+        options.show = True
         options.graph = True
         options.build = True
         options.deploy = True
@@ -738,6 +782,9 @@ When given, all is updated. Default %default.""",
 
     if options.numbers:
         updateNumbers()
+
+    if options.show:
+        reportNumbers()
 
     if options.graph:
         updateConstructGraphs()
