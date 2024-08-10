@@ -552,7 +552,7 @@ def _updateNumbers(python):
         if python_version.startswith("3") and filename.endswith("_27.py"):
             continue
 
-        if python_version in ("2.6", "2.7", "3.4") and filename.endswith("35.py"):
+        if major in ("2.6", "2.7", "3.4") and filename.endswith("35.py"):
             continue
 
         print("Consider:", filename)
@@ -684,15 +684,16 @@ def reportNumbers():
 
             factory = graph_data[python_version, construct_name]["factory"]
             develop = graph_data[python_version, construct_name]["develop"]
+            main = graph_data[python_version, construct_name]["main"]
 
-            data.append((construct_name, tag, python_version, develop, factory, ((factory/develop) * 100)))
+            data.append((construct_name, tag, python_version, main, develop, factory, ((factory/develop) * 100)))
 
     data.sort(key = lambda d:d[5])
 
     for line in data:
-        construct_name, tag, python_version, develop, factory, percent = line
+        construct_name, tag, python_version, main, develop, factory, percent = line
 
-        print(construct_name, tag, python_version, develop, factory, "%.2f" % percent)
+        print(construct_name, tag, python_version, main, develop, factory, "%.2f" % percent)
 
 
 
