@@ -552,7 +552,7 @@ def _updateNumbers(python):
         if python_version.startswith("3") and filename.endswith("_27.py"):
             continue
 
-        if python_version < "3.5" and filename.endswith("35.py"):
+        if python_version in ("2.6", "2.7", "3.4") and filename.endswith("35.py"):
             continue
 
         print("Consider:", filename)
@@ -679,7 +679,7 @@ def reportNumbers():
             if python_version == "2.7":
                 continue
 
-            if not tag.startswith("310_factory"):
+            if not tag.startswith("312_factory"):
                 continue
 
             factory = graph_data[python_version, construct_name]["factory"]
@@ -692,7 +692,7 @@ def reportNumbers():
     for line in data:
         construct_name, tag, python_version, develop, factory, percent = line
 
-        print(construct_name, tag, python_version, develop, "%.2f" % percent)
+        print(construct_name, tag, python_version, develop, factory, "%.2f" % percent)
 
 
 
