@@ -688,7 +688,7 @@ def reportNumbers():
 
             data.append((construct_name, tag, python_version, main, develop, factory, ((factory/develop) * 100)))
 
-    data.sort(key = lambda d:d[5])
+    data.sort(key = lambda d:d[6])
 
     for line in data:
         construct_name, tag, python_version, main, develop, factory, percent = line
