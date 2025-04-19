@@ -496,7 +496,8 @@ def _takeNumbers(name, python, major, filename):
     exit_runner = process.returncode
 
     assert exit_runner == 0, stderr_runner
-    open(data_filename, "wb").write(stdout_runner)
+    with open(data_filename, "wb") as data_filename_file:
+        data_filename_file.write(stdout_runner)
 
 
 def _readNumbers(name, major, filename):
@@ -560,7 +561,8 @@ def _updateNumbers(python):
 
         needs_cpython = False
 
-        test_case_hash = hashlib.md5(open(fullpath, "rb").read()).hexdigest()
+        with open(fullpath, "rb") as test_case_file:
+            test_case_hash = hashlib.md5(test_case_file.read()).hexdigest()
 
         cpython_filename = os.path.join(
             getDataDir(), major, "cpython", filename.replace(".py", ".data")
@@ -613,7 +615,8 @@ def _updateNumbers(python):
 
             assert exit_runner == 0, stderr_runner
 
-            open(cpython_filename, "wb").write(stdout_runner)
+            with open(cpython_filename, "wb") as cpython_output_file:
+                cpython_output_file.write(stdout_runner)
 
         if factory_values is None:
             print("Nuitka factory ... ")
