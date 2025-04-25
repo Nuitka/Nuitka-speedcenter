@@ -51,7 +51,7 @@ def updateNuitkaSoftware():
             % git_dir
         )
     else:
-        executeCommand("cd '%s'; git fetch -p" % clone_dir)
+        executeCommand("cd '%s'; git fetch -p -u" % clone_dir)
 
     for work_tree in work_trees_to_look_at:
         work_tree_dir = getNuitkaWorkTreeDir(work_tree)
