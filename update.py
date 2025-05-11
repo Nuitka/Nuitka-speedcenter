@@ -8,12 +8,11 @@ import os
 import shutil
 import subprocess
 import sys
+from collections import defaultdict
 from io import StringIO
 from optparse import OptionParser
 
 import appdirs
-from collections import defaultdict
-
 from orderedsets import OrderedSet
 
 work_trees_to_look_at = "main", "develop", "factory"
@@ -166,9 +165,8 @@ def readDataFile(filename):
 
     if os.path.exists(filename):
         # There was a bug, where Scons output was done even if used --quiet.
-        code = "".join(
-            line for line in open(filename, "r") if "Nuitka-Scons:" not in line
-        )
+        with open(filename, "r") as data_file:
+            code = "".join(line for line in data_file if "Nuitka-Scons:" not in line)
 
         try:
             exec(code, values)
@@ -689,15 +687,32 @@ def reportNumbers():
             develop = graph_data[python_version, construct_name]["develop"]
             main = graph_data[python_version, construct_name]["main"]
 
-            data.append((construct_name, tag, python_version, main, develop, factory, ((factory/develop) * 100)))
+            data.append(
+                (
+                    construct_name,
+                    tag,
+                    python_version,
+                    main,
+                    develop,
+                    factory,
+                    ((factory / develop) * 100),
+                )
+            )
 
-    data.sort(key = lambda d:d[6])
+    data.sort(key=lambda d: d[6])
 
     for line in data:
         construct_name, tag, python_version, main, develop, factory, percent = line
 
-        print(construct_name, tag, python_version, main, develop, factory, "%.2f" % percent)
-
+        print(
+            construct_name,
+            tag,
+            python_version,
+            main,
+            develop,
+            factory,
+            "%.2f" % percent,
+        )
 
 
 def main():
@@ -729,7 +744,6 @@ When given, the numbers are updated. Default %default.""",
         help="""\
 When given, report the interesting numbers in text report. Default %default.""",
     )
-
 
     parser.add_option(
         "--update-graphs",
