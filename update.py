@@ -598,8 +598,7 @@ def _updateNumbers(python):
                     getNuitkaWorkTreeDir("factory"), "bin/measure-construct-performance"
                 ),
                 fullpath,
-                "--copy-source-to",
-                getSourcesDir(),
+                "--copy-source-to=%s" % getSourcesDir(),
             ]
 
             process = subprocess.Popen(
