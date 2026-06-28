@@ -479,8 +479,7 @@ def _takeNumbers(name, python, major, filename):
         ),
         "--nuitka=%s" % os.path.join(getNuitkaWorkTreeDir(name), "bin/nuitka"),
         "--cpython=no",
-        "--code-diff",
-        os.path.abspath(data_filename.replace(".data", ".html")),
+        "--code-diff=%s" % os.path.abspath(data_filename.replace(".data", ".html")),
         os.path.join(getTestCasesDir(), filename),
     ]
 
