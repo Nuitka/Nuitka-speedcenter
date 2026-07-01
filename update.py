@@ -256,7 +256,7 @@ def getConstructGraphData():
 
 
 def isLessTicksThan(value1, value2):
-    if abs(value1 - value2) / float(value1) < 0.001:
+    if value1 != 0 and abs(value1 - value2) / float(value1) < 0.001:
         return False
 
     if abs(value1 - value2) < 1000:
