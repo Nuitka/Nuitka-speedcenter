@@ -589,7 +589,7 @@ REDIRECTIONS = []
 # To do manual deployment, set it to []
 DEPLOY_COMMANDS = {
     "default" : [
-        "rsync -ravz --delete --exclude=.git --chown www-data:git --chmod Dg+x output/ root@ssh.nuitka.net:/var/www-perf/"
+        "rsync -ravz --delete --exclude=.git --chmod=D755,F644 output/ deploy@ssh.nuitka.net:/var/www-perf/"
     ]
 }
 
